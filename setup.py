@@ -9,7 +9,7 @@
 # Copyright (c) 2012 Damien Hardy dhardy@figarocms.fr
 
 from distutils.core import setup
-from thumbor_hbase import __version__
+from thumbor_riak import __version__
 
 setup(
     name = "thumbor_riak",
