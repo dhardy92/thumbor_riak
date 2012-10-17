@@ -66,6 +66,12 @@ class Storage(BaseStorage):
           return None
 
     def put_crypto(self, path):
+      if not self.context.config.STORES_CRYPTO_KEY_FOR_EACH_IMAGE:
+        return
+
+      if not self.context.config.SECURITY_KEY:
+        raise RuntimeError("STORES_CRYPTO_KEY_FOR_EACH_IMAGE can't be True if no SECURITY_KEY specified")
+
       path = urllib.quote_plus(path)
       url = self.baseurl + "/" + self.cryptobk + "/" + path
       rq = self._request(url, m='PUT', h={"content-type": "plain/text"}, b=self.context.config.SECURITY_KEY)
@@ -78,25 +84,37 @@ class Storage(BaseStorage):
       resp = self.client.fetch(rq)
 
     def get_crypto(self, path):
+      if not self.context.config.STORES_CRYPTO_KEY_FOR_EACH_IMAGE:
+        return None
       path = urllib.quote_plus(path)
       url = self.baseurl + "/" + self.cryptobk + "/" + path
       rq = self._request(url)
-      resp = self.client.fetch(rq)
-      return resp.body
+      try:
+        resp = self.client.fetch(rq)
+        return resp.body
+      except tornado.httpclient.HTTPError, e:
+        return None
+
 
     def get_detector_data(self, path):
       path = urllib.quote_plus(path)
       url = self.baseurl + "/" + self.detectorbk + "/" + path
       rq = self._request(url)
-      resp = self.client.fetch(rq)
-      return resp.body
+      try:
+        resp = self.client.fetch(rq)
+        return resp.body
+      except tornado.httpclient.HTTPError, e:
+        return None
 
     def get(self, path):
       path = urllib.quote_plus(path)
       url = self.baseurl + "/" + self.imagebk + "/" + path
       rq = self._request(url)
-      resp = self.client.fetch(rq)
-      return resp.body
+      try:
+        resp = self.client.fetch(rq)
+        return resp.body
+      except tornado.httpclient.HTTPError, e:
+        return None
 
     def exists(self, path):
       path = urllib.quote_plus(path)

@@ -16,9 +16,22 @@ from thumbor.importer import Importer
 
 IMAGE_URL = 's.glbimg.com/some/image_%s.jpg'
 IMAGE_PATH = join(abspath(dirname(__file__)), 'image.jpg')
+JPG_URL = IMAGE_URL
+JPG_PATH = IMAGE_PATH
+PNG_URL = 's.glbimg.com/some/image_%s.png'
+PNG_PATH = join(abspath(dirname(__file__)), 'image.png')
+GIF_URL = 's.glbimg.com/some/image_%s.gif'
+GIF_PATH = join(abspath(dirname(__file__)), 'image.gif')
+
 
 with open(IMAGE_PATH, 'r') as img:
     IMAGE_BYTES = img.read()
+
+with open(GIF_PATH, 'r') as img:
+    GIF_BYTES = img.read()
+
+with open(PNG_PATH, 'r') as img:
+    PNG_BYTES = img.read()
 
 def get_server(key=None):
     server_params = ServerParameters(8888, 'localhost', 'thumbor.conf', None, 'info', None)
