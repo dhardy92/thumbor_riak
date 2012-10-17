@@ -17,6 +17,21 @@ import tornado.httpclient
 import urllib
 
 class Storage(BaseStorage):
+
+    #HTTPRequest with general settings
+    def _request(self, u, m="GET", h = None, b = None):
+      rq = tornado.httpclient.HTTPRequest(
+                                      url=u,
+                                      method=m,
+                                      headers = h,
+                                      body = b,
+                                      connect_timeout = self.connect_timeout,
+                                      request_timeout = self.request_timeout,
+                                      follow_redirects = self.follow_redirects,
+                                      max_redirects = self.max_redirects 
+                                    )
+      return rq
+
     def __init__(self,context):
         self.context=context
         self.cryptobk = "cryptos"
@@ -26,8 +41,8 @@ class Storage(BaseStorage):
         self.client = tornado.httpclient.HTTPClient()
 
         #default reuests values
-        self.connect_timeout = 20
-        self.request_timeout = 20
+        self.connect_timeout = 0.5
+        self.request_timeout = 1
         self.follow_redirects = True
         self.max_redirects = 3
 
@@ -35,16 +50,7 @@ class Storage(BaseStorage):
 	path = urllib.quote_plus(path)
 
         url = self.baseurl + "/" + self.imagebk + "/" + path
-	rq = tornado.httpclient.HTTPRequest(
-                                      url = url,
-                                      method='PUT',
-                                      headers = {"content-type": "image/jpeg"},
-                                      body = content,
-                                      connect_timeout = self.connect_timeout,
-                                      request_timeout = self.request_timeout,
-                                      follow_redirects = self.follow_redirects,
-                                      max_redirects = self.max_redirects 
-                                    )
+	rq = self._request(url, m='PUT', h={"content-type": "image/jpeg"}, b=content)
         try:
           resp = self.client.fetch(rq)
           return path
@@ -54,83 +60,40 @@ class Storage(BaseStorage):
     def put_crypto(self, path):
       path = urllib.quote_plus(path)
       url = self.baseurl + "/" + self.cryptobk + "/" + path
-      rq = tornado.httpclient.HTTPRequest(
-                                      url = url,
-                                      method='PUT',
-                                      headers = {"content-type": "plain/text"},
-                                      body = content,
-                                      connect_timeout = self.connect_timeout,
-                                      request_timeout = self.request_timeout,
-                                      follow_redirects = self.follow_redirects,
-                                      max_redirects = self.max_redirects
-                                    )
+      rq = self._request(url, m='PUT', h={"content-type": "plain/text"}, b=self.context.config.SECURITY_KEY)
       resp = self.client.fetch(rq)
  
     def put_detector_data(self, path, data):
       path = urllib.quote_plus(path)
       url = self.baseurl + "/" + self.detectorbk + "/" + path
-      rq = tornado.httpclient.HTTPRequest(
-                                      url = url,
-                                      method='PUT',
-                                      headers = {"content-type": "plain/text"},
-                                      body = content,
-                                      connect_timeout = self.connect_timeout,
-                                      request_timeout = self.request_timeout,
-                                      follow_redirects = self.follow_redirects,
-                                      max_redirects = self.max_redirects
-                                    )
+      rq = self._request(url, m='PUT', h={"content-type": "plain/text"}, b=data)
       resp = self.client.fetch(rq)
 
     def get_crypto(self, path):
       path = urllib.quote_plus(path)
       url = self.baseurl + "/" + self.cryptobk + "/" + path
-      rq = tornado.httpclient.HTTPRequest(
-                                      url = url,
-                                      connect_timeout = self.connect_timeout,
-                                      request_timeout = self.request_timeout,
-                                      follow_redirects = self.follow_redirects,
-                                      max_redirects = self.max_redirects
-                                    )
+      rq = self._request(url)
       resp = self.client.fetch(rq)
       return resp.body
 
     def get_detector_data(self, path):
       path = urllib.quote_plus(path)
       url = self.baseurl + "/" + self.detectorbk + "/" + path
-      rq = tornado.httpclient.HTTPRequest(
-                                      url = url,
-                                      connect_timeout = self.connect_timeout,
-                                      request_timeout = self.request_timeout,
-                                      follow_redirects = self.follow_redirects,
-                                      max_redirects = self.max_redirects
-                                    )
+      rq = self._request(url)
       resp = self.client.fetch(rq)
       return resp.body
 
     def get(self, path):
       path = urllib.quote_plus(path)
       url = self.baseurl + "/" + self.imagebk + "/" + path
-      rq = tornado.httpclient.HTTPRequest(
-                                      url = url,
-                                      connect_timeout = self.connect_timeout,
-                                      request_timeout = self.request_timeout,
-                                      follow_redirects = self.follow_redirects,
-                                      max_redirects = self.max_redirects
-                                    )
+      rq = self._request(url)
       resp = self.client.fetch(rq)
       return resp.body
 
     def exists(self, path):
       path = urllib.quote_plus(path)
       url = self.baseurl + "/" + self.imagebk + "/" + path
-      rq = tornado.httpclient.HTTPRequest(
-                                      url = url,
-                                      method = 'GET',
-                                      connect_timeout = self.connect_timeout,
-                                      request_timeout = self.request_timeout,
-                                      follow_redirects = self.follow_redirects,
-                                      max_redirects = self.max_redirects
-                                    )
+      rq = self._request(url)
       try:
         resp = self.client.fetch(rq)
         return (resp.code in [200,302,304])
@@ -143,16 +106,8 @@ class Storage(BaseStorage):
                self.baseurl + "/" + self.cryptobk + "/" + path,
                self.baseurl + "/" + self.detectorbk + "/" + path ]
 
-      for  u in urls:
-        rq = tornado.httpclient.HTTPRequest(
-                                      url = u,
-                                      method = 'DELETE',
-                                      connect_timeout = self.connect_timeout,
-                                      request_timeout = self.request_timeout,
-                                      follow_redirects = self.follow_redirects,
-                                      max_redirects = self.max_redirects
-                                    )
-      
+      for u in urls:
+        rq = self._request(u, m='DELETE')
         try:
           resp = self.client.fetch(rq)
         except tornado.httpclient.HTTPError, e:
