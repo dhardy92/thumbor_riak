@@ -49,8 +49,16 @@ class Storage(BaseStorage):
     def put(self, path, content):
 	path = urllib.quote_plus(path)
 
+        #magic number detection for Content-type
+        if ( content[:4] == 'GIF8'):
+            ct = {"Content-Type": "image/gif"}
+        elif ( content[:8] == '\x89PNG\r\n\x1a\n'):
+            ct = {"Content-Type": "image/png"}
+        else:
+            ct = {"Content-Type": "image/jpeg"}
+
         url = self.baseurl + "/" + self.imagebk + "/" + path
-	rq = self._request(url, m='PUT', h={"content-type": "image/jpeg"}, b=content)
+	rq = self._request(url, m='PUT', h=ct, b=content)
         try:
           resp = self.client.fetch(rq)
           return path
