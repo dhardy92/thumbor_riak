@@ -6,7 +6,7 @@
 
 # Licensed under the MIT license:
 # http://www.opensource.org/licenses/mit-license
-# Copyright (c) 2011 globo.com timehome@corp.globo.com
+# Copyright (c) 2012 dhardy92@github.com
 
 from pyvows import Vows, expect
 
