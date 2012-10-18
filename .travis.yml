@@ -10,9 +10,7 @@ install:
     # update aptitude
     - sudo apt-get update -y
 
-    # install aptitude packages
-    - LDFLAGS=-lm sudo aptitude install -y $(< requirements)
-
+    - LDFLAGS=-lm ; sudo aptitude install -y python-opencv libcurl4-openssl-dev python-dev libjpeg8-dev python-pip python-crypto python-gevent
     - sudo apt-get autoremove -y
 
     - df -h
@@ -24,10 +22,8 @@ install:
     # verify both requirements were met
     - INSTALLDIR=$(python -c "import os; import numpy; print(os.path.dirname(numpy.__file__))")
 
-    - aptitude install python-opencv libcurl4-openssl-dev python-dev libjpeg8-dev python-pip python-crypto python-gevent
-
     # install python requirements
-    - pip install -r test_requirements.txt --use-mirrors
+    - sudo pip install -r test_requirements.txt --use-mirrors
 
 script:
     # weird travis-ci python paths
