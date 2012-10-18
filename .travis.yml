@@ -1,0 +1,41 @@
+language: python
+python:
+  - "2.7"
+services:
+  - riak
+
+install:
+    #removing unwanted packages
+    - sudo apt-get remove --purge -y $(< unwanted_packages)
+    # update aptitude
+    - sudo apt-get update -y
+
+    # install aptitude packages
+    - LDFLAGS=-lm sudo aptitude install -y $(< requirements)
+
+    - sudo apt-get autoremove -y
+
+    - df -h
+    - export PYTHONPATH=$PYTHONPATH:/usr/lib/pymodules/python2.7/
+    - export PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages
+    - export PYTHONPATH=$PYTHONPATH:/usr/lib/pyshared/python2.7/
+    - export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/site-packages/
+
+    # verify both requirements were met
+    - INSTALLDIR=$(python -c "import os; import numpy; print(os.path.dirname(numpy.__file__))")
+
+    - aptitude install python-opencv libcurl4-openssl-dev python-dev libjpeg8-dev python-pip python-crypto python-gevent
+
+    # install python requirements
+    - pip install -r test_requirements.txt --use-mirrors
+
+script:
+    # weird travis-ci python paths
+    - export PYTHONPATH=$PYTHONPATH:/usr/lib/pymodules/python2.7/
+    - export PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages
+    - export PYTHONPATH=$PYTHONPATH:/usr/lib/pyshared/python2.7/
+    - export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/site-packages/
+    - export PYTHONPATH=$PYTHONPATH:.
+
+    # run tests
+    - pyvows -c -l thumbor_riak
