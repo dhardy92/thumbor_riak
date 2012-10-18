@@ -23,7 +23,7 @@ import urllib
 class RiakDBContext(Vows.Context):
   def setup(self):
     #change for riak HTTP interface
-    self.baseurl = "http://10.147.0.20:8097/riak" 
+    self.baseurl = "http://127.0.0.1:8098/riak" 
     self.client = tornado.httpclient.HTTPClient()
 
 @Vows.batch
