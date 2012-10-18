@@ -1,15 +1,14 @@
 language: python
 python:
   - "2.7"
+  
 services:
   - riak
 
 install:
-    #removing unwanted packages
-    - sudo apt-get remove --purge -y $(< unwanted_packages)
     # update aptitude
     - sudo apt-get update -y
-
+    #install debian packages
     - LDFLAGS=-lm ; sudo aptitude install -y python-opencv libcurl4-openssl-dev python-dev libjpeg8-dev python-pip python-crypto python-gevent python-numpy libevent-dev
     - sudo apt-get autoremove -y
 
@@ -26,7 +25,7 @@ install:
     - sudo pip install -r test_requirements.txt --use-mirrors
 
 script:
-    # weird travis-ci python paths
+    # travis-ci python paths
     - export PYTHONPATH=$PYTHONPATH:/usr/lib/pymodules/python2.7/
     - export PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages
     - export PYTHONPATH=$PYTHONPATH:/usr/lib/pyshared/python2.7/
