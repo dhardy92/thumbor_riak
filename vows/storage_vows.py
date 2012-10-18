@@ -22,7 +22,8 @@ import urllib
 
 class RiakDBContext(Vows.Context):
   def setup(self):
-    self.baseurl = "http://10.147.0.20:8097/riak"
+    #change for riak HTTP interface
+    self.baseurl = "http://10.147.0.20:8097/riak" 
     self.client = tornado.httpclient.HTTPClient()
 
 @Vows.batch
@@ -189,7 +190,7 @@ class DetectorVows(RiakDBContext):
       config = Config(RIAK_STORAGE_BASEURL=self.parent.baseurl)
       storage = Storage(Context(config=config, server=get_server('ACME-SEC')))
       storage.put(IMAGE_URL % '7', IMAGE_BYTES)
-      storage.put_detector_data(IMAGE_URL % '7', 'some-data')
+      storage.put_detector_data(IMAGE_URL % '7', [{'origin': 'detection', 'height': 43, 'width': 43, 'y': 197, 'x': 276, 'z': 1849}])
       return storage.get_detector_data(IMAGE_URL % '7')
 
     def should_not_be_null(self, topic):
@@ -197,7 +198,7 @@ class DetectorVows(RiakDBContext):
       expect(topic).not_to_be_an_error()
 
     def should_equal_some_data(self, topic):
-      expect(topic).to_equal('some-data')
+      expect(topic).to_equal([{'origin': 'detection', 'height': 43, 'width': 43, 'y': 197, 'x': 276, 'z': 1849}])
 
   class ReturnsNoneIfNoDetectorData(Vows.Context):
     def topic(self):
