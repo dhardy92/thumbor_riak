@@ -75,13 +75,13 @@ class Storage(BaseStorage):
 
       path = urllib.quote_plus(path)
       url = self.baseurl + "/" + self.cryptobk + "/" + path
-      rq = self._request(url, m='PUT', h={"content-type": "plain/text"}, b=self.context.config.SECURITY_KEY)
+      rq = self._request(url, m='PUT', h={"Content-Type": "plain/text"}, b=self.context.config.SECURITY_KEY)
       resp = self.client.fetch(rq)
  
     def put_detector_data(self, path, data):
       path = urllib.quote_plus(path)
       url = self.baseurl + "/" + self.detectorbk + "/" + path
-      rq = self._request(url, m='PUT', h={"content-type": "plain/text"}, b=data)
+      rq = self._request(url, m='PUT', h={"Content-Type": "application/json"}, b=dumps(data))
       resp = self.client.fetch(rq)
 
     def get_crypto(self, path):
@@ -103,7 +103,7 @@ class Storage(BaseStorage):
       rq = self._request(url)
       try:
         resp = self.client.fetch(rq)
-        return resp.body
+        return loads(resp.body)
       except tornado.httpclient.HTTPError, e:
         return None
 

@@ -11,4 +11,4 @@
 from thumbor.config import Config
 Config.define('RIAK_STORAGE_BASEURL', 'http://localhost:8097/riak','HTTP Riak interface for Storage', 'Riak Storage')
 
-__version__ = "0.1"
+__version__ = "0.2"
