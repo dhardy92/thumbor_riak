@@ -25,6 +25,7 @@ install:
     - sudo pip install -r test_requirements.txt --use-mirrors
 
 script:
+    - service riak start && sleep 5;
     # travis-ci python paths
     - export PYTHONPATH=$PYTHONPATH:/usr/lib/pymodules/python2.7/
     - export PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages
