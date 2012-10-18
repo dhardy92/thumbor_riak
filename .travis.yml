@@ -10,7 +10,7 @@ install:
     # update aptitude
     - sudo apt-get update -y
 
-    - LDFLAGS=-lm ; sudo aptitude install -y python-opencv libcurl4-openssl-dev python-dev libjpeg8-dev python-pip python-crypto python-gevent
+    - LDFLAGS=-lm ; sudo aptitude install -y python-opencv libcurl4-openssl-dev python-dev libjpeg8-dev python-pip python-crypto python-gevent python-numpy
     - sudo apt-get autoremove -y
 
     - df -h
