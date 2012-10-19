@@ -42,8 +42,8 @@ class Storage(BaseStorage):
         self.client = tornado.httpclient.HTTPClient()
 
         #default reuests values
-        self.connect_timeout = 3
-        self.request_timeout = 5
+        self.connect_timeout = 0.5
+        self.request_timeout = 1
         self.follow_redirects = True
         self.max_redirects = 3
 
