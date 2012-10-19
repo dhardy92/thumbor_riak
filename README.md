@@ -1,6 +1,8 @@
 Riak Storage Module for Thumbor
 ===================================
 
+![Travis-CI status](https://secure.travis-ci.org/dhardy92/thumbor_riak.png?branch=master)
+
 Introduction
 ------------
 
