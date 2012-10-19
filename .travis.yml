@@ -3,35 +3,18 @@ python:
   - "2.7"
   
 services:
-  - riak
+    - riak
 
 install:
     # update aptitude
     - sudo apt-get update -y
     #install debian packages
-    - LDFLAGS=-lm ; sudo aptitude install -y python-opencv libcurl4-openssl-dev python-dev libjpeg8-dev python-pip python-crypto python-gevent python-numpy libevent-dev
+    - sudo aptitude install -y python-opencv libcurl4-openssl-dev python-dev libjpeg8-dev python-pip python-crypto python-gevent libevent-dev
     - sudo apt-get autoremove -y
-
-    - df -h
-    - export PYTHONPATH=$PYTHONPATH:/usr/lib/pymodules/python2.7/
-    - export PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages
-    - export PYTHONPATH=$PYTHONPATH:/usr/lib/pyshared/python2.7/
-    - export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/site-packages/
-
-    # verify both requirements were met
-    - INSTALLDIR=$(python -c "import os; import numpy; print(os.path.dirname(numpy.__file__))")
-
     # install python requirements
-    - sudo pip install -r test_requirements.txt --use-mirrors
+    - sudo pip install thumbor --use-mirrors
+    - sudo pip install pyvows --use-mirrors
 
 script:
-    - sleep 3;
-    # travis-ci python paths
-    - export PYTHONPATH=$PYTHONPATH:/usr/lib/pymodules/python2.7/
-    - export PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages
-    - export PYTHONPATH=$PYTHONPATH:/usr/lib/pyshared/python2.7/
-    - export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/site-packages/
-    - export PYTHONPATH=$PYTHONPATH:.
-
     # run tests
     - pyvows -c -l thumbor_riak
