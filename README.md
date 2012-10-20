@@ -19,7 +19,7 @@ This module provide support for Riak as a large auto replicant key/value backend
 Installation
 ------------
 
-The current version of the module is **0.1**.
+The current version of the module is **0.2**.
 
 In order to install the Riak Storage Module for Thumbor, you have to install a riak service first.
 
