@@ -3,19 +3,19 @@ language: python
 python:
   - "2.7"
   
-services:
-    - riak
-
 install:
     # update aptitude
     - sudo apt-get update -y
     #install debian packages
     - sudo aptitude install -y python-opencv libcurl4-openssl-dev python-dev libjpeg8-dev python-pip python-crypto python-gevent libevent-dev
     - sudo apt-get autoremove -y
+    - wget http://downloads.basho.com.s3-website-us-east-1.amazonaws.com/riak/CURRENT/ubuntu/lucid/riak_1.2.1-1_i386.deb -O /tmp/riak_1.2.1-1_i386.deb
+    - sudo dpkg -i /tmp/riak_1.2.1-1_i386.deb
     # install python requirements
     - sudo pip install thumbor --use-mirrors
     - sudo pip install pyvows --use-mirrors
 
 script:
     # run tests
+    - sudo service riak start && sleep 3
     - pyvows -c -l thumbor_riak
